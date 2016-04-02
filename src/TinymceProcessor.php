@@ -11,6 +11,7 @@
 namespace Cyberitas\TinymceProcessor;
 
 use yii\base\Model;
+use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
 
 /**
  * Model that applies all text processing to an input value from a TinyMCE
@@ -29,7 +30,8 @@ class TinymceProcessor extends Model
     public function rules()
     {
         return [
-            ['content', 'string']
+            ['content', 'string'],
+            ['content', EssenceValidator::className()]
         ];
     }
 }
