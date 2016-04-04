@@ -33,7 +33,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Cyberitas\\TinymceProcessor\\": "src/"
+      "Cyberitas\\TinymceProcessor\\": "src/",
+      "Cyberitas\\TinymceProcessor\\Tests\\": "tests/"
     }
   }
 }
