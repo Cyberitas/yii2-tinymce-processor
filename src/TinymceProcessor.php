@@ -20,9 +20,22 @@ use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
 class TinymceProcessor extends Model
 {
     /**
-     * @var string Content from a TinyMCE editor
+     * @var string Content from a TinyMCE editor to be processed
      */
     public $content;
+
+    /**
+     * Process a string with the configured validators.
+     *
+     * @param string $content string from a TinyMCE editor to be processed
+     * @return string processed content
+     */
+    public function process($content)
+    {
+        $this->content = $content;
+        $this->validate();
+        return $this->content;
+    }
 
     /**
      * @inheritdoc

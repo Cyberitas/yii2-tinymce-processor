@@ -6,6 +6,13 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 
 - [Essence][] oEmbed processing
 
+## Usage
+
+```php
+$tmp = new TinymceProcessor();
+$output = $tmp->process("This is some content from a TinyMCE editor.");
+```
+
 ## Copyright
 
 Copyright © 2016 [Cyberitas Technologies, LLC][]. This program is free software:
