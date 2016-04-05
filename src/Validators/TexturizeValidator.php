@@ -16,6 +16,16 @@ use yii\validators\FilterValidator;
 class TexturizeValidator extends FilterValidator
 {
     /**
+     * @const array map of static character replacements
+     */
+    const STATIC_TRANSLATIONS = [
+        '(c)'  => '&#169;',
+        '(r)'  => '&#174;',
+        '...'  => '&#8230;',
+        '(tm)' => '&#8242;',
+    ];
+
+    /**
      * @inheritdoc
      */
     public $enableClientValidation = false;
@@ -25,6 +35,23 @@ class TexturizeValidator extends FilterValidator
      */
     public function init()
     {
+        $this->filter = function ($value) {
+            return $this->texturize($value);
+        };
+
         parent::init();
+    }
+
+    /**
+     * Performs formatting conversions and replacements on a string.
+     *
+     * @param string $value string to be formatted
+     * @return string formatted string
+     */
+    protected function texturize($value)
+    {
+        $value = strtr($value, self::STATIC_TRANSLATIONS);
+
+        return $value;
     }
 }
