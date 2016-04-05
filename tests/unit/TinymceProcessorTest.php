@@ -50,12 +50,27 @@ class TinymceProcessorTest extends TestCase
      */
     public function testRunsEssenceValidator()
     {
-        $output = $this->tmp->process("https://www.youtube.com/watch?v=9bZkp7q19f0");
+        $input = "https://www.youtube.com/watch?v=9bZkp7q19f0";
         $expected = <<<EOF
 <iframe width="480" height="270" src="https://www.youtube.com/embed/9bZkp7q19f0?feature=oembed" frameborder="0" allowfullscreen></iframe>
 EOF;
 
-        $this->assertTrue($this->tmp->validate());
+        $output = $this->tmp->process($input);
+        $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * TinymceProcessor content goes through TexturizeValidator and has
+     * appropriate formatting replacements performed
+     */
+    public function testRunsTexturizeValidator()
+    {
+        $input = "This is some text... (c) (r) (tm)";
+        $expected = <<<EOF
+This is some text&#8230; &#169; &#174; &#8242;
+EOF;
+
+        $output = $this->tmp->process($input);
         $this->assertEquals($expected, $output);
     }
 }
