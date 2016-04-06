@@ -73,4 +73,30 @@ EOF;
         $output = $this->tmp->process($input);
         $this->assertEquals($expected, $output);
     }
+
+    /**
+     * TinymceProcessor configuration can enable, disable, and pass options to
+     * individual validators.
+     */
+    public function testConfiguration()
+    {
+        $this->tmp->configure([
+            'essence'   => false,
+            'texturize' => true
+        ]);
+
+        $input = <<<EOF
+Some of this should be processed...but some shouldn't.
+
+https://www.youtube.com/watch?v=9bZkp7q19f0
+EOF;
+        $expected = <<<EOF
+Some of this should be processed&#8230;but some shouldn't.
+
+https://www.youtube.com/watch?v=9bZkp7q19f0
+EOF;
+
+        $output = $this->tmp->process($input);
+        $this->assertEquals($expected, $output);
+    }
 }
