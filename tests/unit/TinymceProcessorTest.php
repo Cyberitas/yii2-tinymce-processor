@@ -91,7 +91,7 @@ Some of this should be processed...but some shouldn't.
 https://www.youtube.com/watch?v=9bZkp7q19f0
 EOF;
         $expected = <<<EOF
-Some of this should be processed&#8230;but some shouldn't.
+Some of this should be processed&#8230;but some shouldn&#8217;t.
 
 https://www.youtube.com/watch?v=9bZkp7q19f0
 EOF;
