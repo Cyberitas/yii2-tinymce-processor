@@ -26,6 +26,7 @@
   "require": {
     "php": ">= 5.6",
     "yiisoft/yii2": "*",
+    "tinymce/tinymce": ">=4",
     "essence/essence": "^3.1"
   },
   "require-dev": {
