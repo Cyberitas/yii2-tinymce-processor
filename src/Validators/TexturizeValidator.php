@@ -126,6 +126,20 @@ class TexturizeValidator extends FilterValidator
             $this->dynamicTranslations['/(?<!' . $this->spaces . ')\'(?!\Z|[.,:;!?"\'(){}[\]\-]|&[lg]t;|' .
                 $this->spaces . ')/'] = $this->rightSingleQuote;
         }
+
+        // Double-quoted numbers
+        // e.g. "42"
+        if ($this->leftDoubleQuote !== '"' && $this->rightDoubleQuote !== '"') {
+            $this->dynamicTranslations['/(?<=\A|' . $this->spaces . ')"(\d[.,\d]*)"/'] =
+                $this->leftDoubleQuote . '$1' . $this->rightDoubleQuote;
+        }
+
+        // Double quote at start or after (, {, <, [, -, or whitespace, and not
+        // followed by whitespace.
+        if ($this->leftDoubleQuote !== '"') {
+            $this->dynamicTranslations['/(?<=\A|[([{\-]|&lt;|' . $this->spaces . ')"(?!' . $this->spaces . ')/'] =
+                $this->leftDoubleQuote;
+        }
     }
 
     /**
