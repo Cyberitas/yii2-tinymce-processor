@@ -18,7 +18,7 @@ class TexturizeValidator extends FilterValidator
     /**
      * @const array default static character replacements
      */
-    const DEFAULT_STATIC_TRANSLATIONS = [
+    private static $DEFAULT_STATIC_TRANSLATIONS = [
         '(c)'  => '&#169;',
         '(r)'  => '&#174;',
         '...'  => '&#8230;',
@@ -48,7 +48,7 @@ class TexturizeValidator extends FilterValidator
     /**
      * @var array set of static character replacements
      */
-    protected $staticTranslations = self::DEFAULT_STATIC_TRANSLATIONS;
+    protected $staticTranslations;
 
     /**
      * @var array set of dynamic character replacements
@@ -79,7 +79,7 @@ class TexturizeValidator extends FilterValidator
 
         parent::init();
 
-        $this->staticTranslations = array_merge($this->staticTranslations, [
+        $this->staticTranslations = array_merge(self::$DEFAULT_STATIC_TRANSLATIONS, [
             '``'   => $this->leftDoubleQuote,
             '\'\'' => $this->rightDoubleQuote
         ]);

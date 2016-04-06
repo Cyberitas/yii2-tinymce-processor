@@ -23,7 +23,7 @@ class TinymceProcessor extends Model
     /**
      * @const array default processor configuration
      */
-    const DEFAULT_CONFIG = [
+    private static $DEFAULT_CONFIG = [
         'essence'   => true,
         'texturize' => true
     ];
@@ -36,7 +36,7 @@ class TinymceProcessor extends Model
     /**
      * @var array processor and validator configuration
      */
-    protected $config = self::DEFAULT_CONFIG;
+    protected $config;
 
     /**
      * @var array validation rules and configuration
@@ -44,6 +44,14 @@ class TinymceProcessor extends Model
     protected $rules = [
         ['content', 'string']
     ];
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->config = self::$DEFAULT_CONFIG;
+    }
 
     /**
      * Conifgure the processor and validators.

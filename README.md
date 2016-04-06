@@ -8,6 +8,10 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 
 ## Usage
 
+```bash
+composer require "cyberitas/yii2-tinymce-processor"
+```
+
 ```php
 $tmp = new TinymceProcessor();
 $output = $tmp->process("This is some content from a TinyMCE editor.");
