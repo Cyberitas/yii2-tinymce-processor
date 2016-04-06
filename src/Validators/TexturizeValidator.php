@@ -35,9 +35,7 @@ class TexturizeValidator extends FilterValidator
      */
     public function init()
     {
-        $this->filter = function ($value) {
-            return $this->texturize($value);
-        };
+        $this->filter = array($this, 'texturize');
 
         parent::init();
     }
