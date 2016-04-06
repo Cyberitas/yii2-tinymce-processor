@@ -1,5 +1,5 @@
 {
-  "name": "Cyberitas/yii2-tinymce-processor",
+  "name": "cyberitas/yii2-tinymce-processor",
   "description": "Yii 2 extension providing WordPress-style text processing from a TinyMCE editor",
   "version": "0.1.0",
   "type": "yii2-extension",

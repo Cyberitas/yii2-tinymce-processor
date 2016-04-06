@@ -9,7 +9,7 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 ## Usage
 
 ```bash
-composer require "Cyberitas/yii2-tinymce-processor"
+composer require "cyberitas/yii2-tinymce-processor"
 ```
 
 ```php
