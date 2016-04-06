@@ -4,6 +4,9 @@ php:
 - '7.0'
 - hhvm
 - nightly
+matrix:
+  allow_failures:
+  - php: hhvm
 install:
 - composer self-update
 - composer global require "fxp/composer-asset-plugin:~1.1.1"
