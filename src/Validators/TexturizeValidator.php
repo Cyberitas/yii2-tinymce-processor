@@ -53,7 +53,11 @@ class TexturizeValidator extends FilterValidator
     /**
      * @var array set of dynamic character replacements
      */
-    protected $dynamicTranslations = [];
+    protected $dynamicTranslations = [
+        'singleQuotes' => [],
+        'doubleQuotes' => [],
+        'dashes'       => []
+    ];
 
     /**
      * @var string regular expression to match whitespace, from WordPress'
@@ -94,51 +98,52 @@ class TexturizeValidator extends FilterValidator
         // Assume an abbreviated year at the end of a quotation
         // e.g.: '99', '99"
         if ($this->leftSingleQuote !== '\'' || $this->rightSingleQuote !== '\'') {
-            $this->dynamicTranslations['/\'(\d\d)\'(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $this->spaces . ')/'] =
+            $this->dynamicTranslations['singleQuotes']['/\'(\d\d)\'(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $this->spaces . ')/'] =
                 $this->leftSingleQuote . '$1' . $this->rightSingleQuote;
         }
 
         if ($this->leftSingleQuote !== '\'' || $this->rightDoubleQuote !== '"') {
-            $this->dynamicTranslations['/\'(\d\d)"(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $this->spaces . ')/'] =
+            $this->dynamicTranslations['singleQuotes']['/\'(\d\d)"(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $this->spaces . ')/'] =
                 $this->leftSingleQuote . '$1' . $this->rightDoubleQuote;
         }
 
         // '99, '99s, '99's, but not '9, '99%, '999, or '99.0.
         if ($this->leftSingleQuote !== '\'') {
-            $this->dynamicTranslations['/\'(?=\d\d(?:\Z|(?![%\d]|[.,]\d)))/'] = $this->leftSingleQuote;
+            $this->dynamicTranslations['singleQuotes']['/\'(?=\d\d(?:\Z|(?![%\d]|[.,]\d)))/'] = $this->leftSingleQuote;
         }
 
         // Single-quoted numbers
         // e.g. '0.42'
         if ($this->leftSingleQuote !== '\'' && $this->rightSingleQuote !== '\'') {
-            $this->dynamicTranslations['/(?<=\A|' . $this->spaces . ')\'(\d[.,\d]*)\'/'] =
+            $this->dynamicTranslations['singleQuotes']['/(?<=\A|' . $this->spaces . ')\'(\d[.,\d]*)\'/'] =
                 $this->leftSingleQuote . '$1' . $this->rightSingleQuote;
         }
 
         // Single quote at start or after (, {, <, [, ", -, or whitespace.
         if ($this->leftSingleQuote !== '\'') {
-            $this->dynamicTranslations['/(?<=\A|[([{"\-]|&lt;|' . $this->spaces . ')\'/'] = $this->leftSingleQuote;
+            $this->dynamicTranslations['singleQuotes']['/(?<=\A|[([{"\-]|&lt;|' . $this->spaces . ')\'/'] =
+                $this->leftSingleQuote;
         }
 
         // Apostrophe in a word; no spaces, double apostrophes, or other
         // punctuation.
         if ($this->rightSingleQuote !== '\'') {
-            $this->dynamicTranslations['/(?<!' . $this->spaces . ')\'(?!\Z|[.,:;!?"\'(){}[\]\-]|&[lg]t;|' .
-                $this->spaces . ')/'] = $this->rightSingleQuote;
+            $this->dynamicTranslations['singleQuotes']['/(?<!' . $this->spaces .
+                ')\'(?!\Z|[.,:;!?"\'(){}[\]\-]|&[lg]t;|'. $this->spaces . ')/'] = $this->rightSingleQuote;
         }
 
         // Double-quoted numbers
         // e.g. "42"
         if ($this->leftDoubleQuote !== '"' && $this->rightDoubleQuote !== '"') {
-            $this->dynamicTranslations['/(?<=\A|' . $this->spaces . ')"(\d[.,\d]*)"/'] =
+            $this->dynamicTranslations['doubleQuotes']['/(?<=\A|' . $this->spaces . ')"(\d[.,\d]*)"/'] =
                 $this->leftDoubleQuote . '$1' . $this->rightDoubleQuote;
         }
 
         // Double quote at start or after (, {, <, [, -, or whitespace, and not
         // followed by whitespace.
         if ($this->leftDoubleQuote !== '"') {
-            $this->dynamicTranslations['/(?<=\A|[([{\-]|&lt;|' . $this->spaces . ')"(?!' . $this->spaces . ')/'] =
-                $this->leftDoubleQuote;
+            $this->dynamicTranslations['doubleQuotes']['/(?<=\A|[([{\-]|&lt;|' . $this->spaces . ')"(?!' .
+                $this->spaces . ')/'] = $this->leftDoubleQuote;
         }
     }
 
@@ -152,8 +157,10 @@ class TexturizeValidator extends FilterValidator
     {
         $value = strtr($value, $this->staticTranslations);
 
-        foreach ($this->dynamicTranslations as $pattern => $replacement) {
-            $value = preg_replace($pattern, $replacement, $value);
+        // TODO: break this out into separate preg_replace calls for
+        // singleQuotes, doubleQuotes, and dashes
+        foreach (array_values($this->dynamicTranslations) as $translations) {
+            $value = preg_replace(array_keys($translations), array_values($translations), $value);
         }
 
         return $value;
