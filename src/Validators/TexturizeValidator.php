@@ -76,6 +76,11 @@ class TexturizeValidator extends FilterValidator
     protected $spaces = '[\r\n\t ]|\xC2\xA0|&nbsp;';
 
     /**
+     * @var string regular expression for splitting an HTML string
+     */
+    protected $htmlSplitRegex;
+
+    /**
      * @inheritdoc
      */
     public $enableClientValidation = false;
@@ -95,6 +100,7 @@ class TexturizeValidator extends FilterValidator
         ]);
 
         $this->prepareDynamicTranslations();
+        $this->prepareHtmlSplitRegex();
     }
 
     /**
@@ -163,6 +169,56 @@ class TexturizeValidator extends FilterValidator
         $this->dynamicTranslations['dashes']['/(?<!xn)--/'] = $this->enDash;
         $this->dynamicTranslations['dashes']['/(?<=^|' . $this->spaces . ')-(?=$|' . $this->spaces .
             ')/'] = $this->enDash;
+    }
+
+    /**
+     * Prepare the regular expression for splitting an HTML string. From
+     * WordPress' `get_html_split_regex()`.
+     *
+     * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L591
+     */
+    protected function prepareHtmlSplitRegex()
+    {
+        $comments =
+            '!'           // Start of comment, after the <.
+            . '(?:'         // Unroll the loop: Consume everything until --> is found.
+            .     '-(?!->)' // Dash not followed by end of comment.
+            .     '[^\-]*+' // Consume non-dashes.
+            . ')*+'         // Loop possessively.
+            . '(?:-->)?';   // End of comment. If not found, match all input.
+
+        $cdata =
+            '!\[CDATA\['  // Start of comment, after the <.
+            . '[^\]]*+'     // Consume non-].
+            . '(?:'         // Unroll the loop: Consume everything until ]]> is found.
+            .     '](?!]>)' // One ] not followed by end of comment.
+            .     '[^\]]*+' // Consume non-].
+            . ')*+'         // Loop possessively.
+            . '(?:]]>)?';   // End of comment. If not found, match all input.
+
+        $escaped =
+            '(?='           // Is the element escaped?
+            .    '!--'
+            . '|'
+            .    '!\[CDATA\['
+            . ')'
+            . '(?(?=!-)'      // If yes, which type?
+            .     $comments
+            . '|'
+            .     $cdata
+            . ')';
+
+        $regex =
+            '/('              // Capture the entire match.
+            .     '<'           // Find start of element.
+            .     '(?'          // Conditional expression follows.
+            .         $escaped  // Find end of escaped element.
+            .     '|'           // ... else ...
+            .         '[^>]*>?' // Find end of normal element.
+            .     ')'
+            . ')/';
+
+        $this->htmlSplitRegex = $regex;
     }
 
     /**
