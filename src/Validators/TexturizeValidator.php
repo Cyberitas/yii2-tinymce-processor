@@ -46,6 +46,16 @@ class TexturizeValidator extends FilterValidator
     public $rightDoubleQuote = '&#8221;';
 
     /**
+     * @var string em dash
+     */
+    public $emDash = '&#8211;';
+
+    /**
+     * @var string en dash
+     */
+    public $enDash = '&#8212;';
+
+    /**
      * @var array set of static character replacements
      */
     protected $staticTranslations;
@@ -145,6 +155,14 @@ class TexturizeValidator extends FilterValidator
             $this->dynamicTranslations['doubleQuotes']['/(?<=\A|[([{\-]|&lt;|' . $this->spaces . ')"(?!' .
                 $this->spaces . ')/'] = $this->leftDoubleQuote;
         }
+
+        // Dashes and spaces
+        $this->dynamicTranslations['dashes']['/---/'] = $this->emDash;
+        $this->dynamicTranslations['dashes']['/(?<=^|' . $this->spaces . ')--(?=$|' . $this->spaces .
+            ')/'] = $this->emDash;
+        $this->dynamicTranslations['dashes']['/(?<!xn)--/'] = $this->enDash;
+        $this->dynamicTranslations['dashes']['/(?<=^|' . $this->spaces . ')-(?=$|' . $this->spaces .
+            ')/'] = $this->enDash;
     }
 
     /**
