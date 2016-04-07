@@ -260,4 +260,42 @@ class TexturizeValidator extends FilterValidator
 
         return $value;
     }
+
+    /**
+     * Search for disabled element tags, push to stack on open and pop on close.
+     * From WordPress' `_wptexturize_pushpop_element()`.
+     *
+     * @param string $element HTML tag to check and push or pop
+     * @param array $stack list of open tag elements
+     * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L361
+     */
+    protected function pushPopElement($element, $stack)
+    {
+        if ($element[1] !== '/') { // opening tag
+            $openingTag = true;
+            $offset = 1;
+        } elseif (count($stack) === 0) { // empty stack
+            return;
+        } else { // closing tag
+            $openingTag = false;
+            $offset = 2;
+        }
+
+        $space = strpos($element, ' ');
+        if ($space === false) {
+            $space = -1;
+        } else {
+            $space -= $offset;
+        }
+
+        $tagName = substr($element, $offset, $space);
+
+        if (in_array($tagName, $this->noTexturizeTags)) {
+            if ($openingTag) {
+                array_push($stack, $tagName);
+            } elseif (end($stack) === $tagName) {
+                array_pop($stack);
+            }
+        }
+    }
 }
