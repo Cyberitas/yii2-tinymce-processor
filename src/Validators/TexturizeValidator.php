@@ -26,6 +26,18 @@ class TexturizeValidator extends FilterValidator
     ];
 
     /**
+     * @const array default tags whose contents should not be texturized
+     */
+    private static $DEFAULT_NO_TEXTURIZE_TAGS = [
+        'pre',
+        'code',
+        'kbd',
+        'style',
+        'script',
+        'tt'
+    ];
+
+    /**
      * @var string opening single quote character
      */
     public $leftSingleQuote = '&#8216;';
@@ -54,6 +66,11 @@ class TexturizeValidator extends FilterValidator
      * @var string en dash
      */
     public $enDash = '&#8212;';
+
+    /**
+     * @var array tags whose contents should not be texturized
+     */
+    public $noTexturizeTags;
 
     /**
      * @var array set of static character replacements
@@ -98,6 +115,10 @@ class TexturizeValidator extends FilterValidator
             '``'   => $this->leftDoubleQuote,
             '\'\'' => $this->rightDoubleQuote
         ]);
+
+        if (!is_array($this->noTexturizeTags)) {
+            $this->noTexturizeTags = self::$DEFAULT_NO_TEXTURIZE_TAGS;
+        }
 
         $this->prepareDynamicTranslations();
         $this->prepareHtmlSplitRegex();
