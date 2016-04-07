@@ -38,6 +38,11 @@ class TexturizeValidator extends FilterValidator
     ];
 
     /**
+     * @const string ampersand entity replacement pattern
+     */
+    private static $APMERSAND_ENTITY_PATTERN = '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i';
+
+    /**
      * @var string opening single quote character
      */
     public $leftSingleQuote = '&#8216;';
@@ -243,19 +248,36 @@ class TexturizeValidator extends FilterValidator
     }
 
     /**
-     * Performs formatting conversions and replacements on a string.
+     * Performs formatting conversions and replacements on a string. Extracted
+     * from WordPress' `wptexturize()`.
      *
      * @param string $value string to be formatted
      * @return string formatted string
+     * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L41
      */
     protected function texturize($value)
     {
-        $value = strtr($value, $this->staticTranslations);
-
+        // $value = strtr($value, $this->staticTranslations);
+        //
         // TODO: break this out into separate preg_replace calls for
         // singleQuotes, doubleQuotes, and dashes
-        foreach (array_values($this->dynamicTranslations) as $translations) {
-            $value = preg_replace(array_keys($translations), array_values($translations), $value);
+        // foreach (array_values($this->dynamicTranslations) as $translations) {
+        //     $value = preg_replace(array_keys($translations), array_values($translations), $value);
+        // }
+        $noTexturizeTagStack = [];
+
+        preg_match_all('@\[/?([^<>&/\[\]\x00-\x20=]++)@', $value, $tagNames);
+        $tagNames = $tagNames[1];
+        $valueSplit = preg_split($this->htmlSplitRegex, $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        foreach ($valueSplit as &$chunk) {
+            if ($chunk[0] === '<') {
+                if (substr($chunk, 0, 4 === '<!--')) { // HTML comment
+                    continue;
+                } else { // HTML element
+                    $chunk = preg_replace(self::$APMERSAND_ENTITY_PATTERN, '&#038;', $chunk);
+                }
+            }
         }
 
         return $value;
