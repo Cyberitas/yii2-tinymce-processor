@@ -7,6 +7,7 @@
  */
 namespace Cyberitas\TinymceProcessor\Validators;
 
+use Cyberitas\TinymceProcessor\Helpers\HTMLSplitHelper;
 use yii\validators\FilterValidator;
 
 /**
@@ -36,11 +37,6 @@ class TexturizeValidator extends FilterValidator
         'script',
         'tt'
     ];
-
-    /**
-     * @const string regular expression for splitting an HTML string
-     */
-    private static $HTML_SPLIT_REGEX;
 
     /**
      * @const string ampersand entity replacement pattern
@@ -141,7 +137,6 @@ class TexturizeValidator extends FilterValidator
         }
 
         $this->prepareDynamicTranslations();
-        self::prepareHtmlSplitRegex();
     }
 
     /**
@@ -213,60 +208,6 @@ class TexturizeValidator extends FilterValidator
     }
 
     /**
-     * Prepare the regular expression for splitting an HTML string. From
-     * WordPress' `get_html_split_regex()`.
-     *
-     * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L591
-     */
-    protected static function prepareHtmlSplitRegex()
-    {
-        if (strlen(self::$HTML_SPLIT_REGEX) > 0) {
-            return;
-        }
-
-        $comments =
-            '!'           // Start of comment, after the <.
-            . '(?:'         // Unroll the loop: Consume everything until --> is found.
-            .     '-(?!->)' // Dash not followed by end of comment.
-            .     '[^\-]*+' // Consume non-dashes.
-            . ')*+'         // Loop possessively.
-            . '(?:-->)?';   // End of comment. If not found, match all input.
-
-        $cdata =
-            '!\[CDATA\['  // Start of comment, after the <.
-            . '[^\]]*+'     // Consume non-].
-            . '(?:'         // Unroll the loop: Consume everything until ]]> is found.
-            .     '](?!]>)' // One ] not followed by end of comment.
-            .     '[^\]]*+' // Consume non-].
-            . ')*+'         // Loop possessively.
-            . '(?:]]>)?';   // End of comment. If not found, match all input.
-
-        $escaped =
-            '(?='           // Is the element escaped?
-            .    '!--'
-            . '|'
-            .    '!\[CDATA\['
-            . ')'
-            . '(?(?=!-)'      // If yes, which type?
-            .     $comments
-            . '|'
-            .     $cdata
-            . ')';
-
-        $regex =
-            '/('              // Capture the entire match.
-            .     '<'           // Find start of element.
-            .     '(?'          // Conditional expression follows.
-            .         $escaped  // Find end of escaped element.
-            .     '|'           // ... else ...
-            .         '[^>]*>?' // Find end of normal element.
-            .     ')'
-            . ')/';
-
-        self::$HTML_SPLIT_REGEX = $regex;
-    }
-
-    /**
      * Performs formatting conversions and replacements on a string. Extracted
      * from WordPress' `wptexturize()`.
      *
@@ -280,7 +221,7 @@ class TexturizeValidator extends FilterValidator
 
         preg_match_all('@\[/?([^<>&/\[\]\x00-\x20=]++)@', $value, $tagNames);
         $tagNames = $tagNames[1];
-        $valueSplit = preg_split(self::$HTML_SPLIT_REGEX, $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $valueSplit = HTMLSplitHelper::splitHtml($value, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         foreach ($valueSplit as &$chunk) {
             if ($chunk[0] === '<') {
