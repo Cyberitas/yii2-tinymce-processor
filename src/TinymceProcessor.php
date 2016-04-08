@@ -22,6 +22,15 @@ use Cyberitas\TinymceProcessor\Validators\TexturizeValidator;
 class TinymceProcessor extends Model
 {
     /**
+     * @const array validators in the order they should be run
+     */
+    private static $VALIDATORS = [
+        'essence',
+        'texturize',
+        'autop'
+    ];
+
+    /**
      * @const array default processor configuration
      */
     private static $DEFAULT_CONFIG = [
@@ -106,22 +115,21 @@ class TinymceProcessor extends Model
      */
     private function configureRules()
     {
-        foreach ($this->config as $key => $value) {
+        foreach (self::$VALIDATORS as $validator) {
             // If the validator is not disabled...
-            if (false !== $value) {
-                $validator = ['content'];
+            if (array_key_exists($validator, $this->config) && false !== $this->config[$validator]) {
+                $rule = ['content'];
 
-                // ...and it exists...
-                switch ($key) {
-                    // ...add it to the list of rules.
+                // ...add it to the list of rules.
+                switch ($validator) {
                     case 'autop':
-                        array_push($validator, AutoParagraphValidator::className());
+                        array_push($rule, AutoParagraphValidator::className());
                         break;
                     case 'essence':
-                        array_push($validator, EssenceValidator::className());
+                        array_push($rule, EssenceValidator::className());
                         break;
                     case 'texturize':
-                        array_push($validator, TexturizeValidator::className());
+                        array_push($rule, TexturizeValidator::className());
                         break;
                     // If it doesn't exist, don't add it.
                     default:
@@ -130,11 +138,11 @@ class TinymceProcessor extends Model
 
                 // If configuration is provided for the validator, include it in
                 // the rule.
-                if (is_array($value)) {
-                    array_push($validator, $value);
+                if (is_array($this->config[$validator])) {
+                    array_push($v, $this->config[$validator]);
                 }
 
-                array_push($this->rules, $validator);
+                array_push($this->rules, $rule);
             }
         }
     }
