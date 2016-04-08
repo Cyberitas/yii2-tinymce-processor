@@ -5,6 +5,7 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 ## Features
 
 - [Essence][] oEmbed processing
+- Texturization, replicating [`wptexturize()`](https://codex.wordpress.org/Function_Reference/wptexturize)
 
 ## Usage
 
@@ -14,6 +15,13 @@ composer require "cyberitas/yii2-tinymce-processor"
 
 ```php
 $tmp = new TinymceProcessor();
+$tmp->configure([
+    'essence' => true,
+    'texturize' => [
+        'leftDoubleQuote' => '&laquo;',
+        'rightDoubleQuote' => '&raquo;'
+    ]
+]);
 $output = $tmp->process("This is some content from a TinyMCE editor.");
 ```
 
