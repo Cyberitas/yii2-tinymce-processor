@@ -11,6 +11,7 @@
 namespace Cyberitas\TinymceProcessor;
 
 use yii\base\Model;
+use Cyberitas\TinymceProcessor\Validators\AutoParagraphValidator;
 use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
 use Cyberitas\TinymceProcessor\Validators\TexturizeValidator;
 
@@ -24,6 +25,7 @@ class TinymceProcessor extends Model
      * @const array default processor configuration
      */
     private static $DEFAULT_CONFIG = [
+        'autop'     => true,
         'essence'   => true,
         'texturize' => true
     ];
@@ -112,6 +114,9 @@ class TinymceProcessor extends Model
                 // ...and it exists...
                 switch ($key) {
                     // ...add it to the list of rules.
+                    case 'autop':
+                        array_push($validator, AutoParagraphValidator::className());
+                        break;
                     case 'essence':
                         array_push($validator, EssenceValidator::className());
                         break;
