@@ -38,6 +38,11 @@ class TexturizeValidator extends FilterValidator
     ];
 
     /**
+     * @const string regular expression for splitting an HTML string
+     */
+    private static $HTML_SPLIT_REGEX;
+
+    /**
      * @const string ampersand entity replacement pattern
      */
     private static $APMERSAND_ENTITY_PATTERN = '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i';
@@ -113,11 +118,6 @@ class TexturizeValidator extends FilterValidator
     protected $spaces = '[\r\n\t ]|\xC2\xA0|&nbsp;';
 
     /**
-     * @var string regular expression for splitting an HTML string
-     */
-    protected $htmlSplitRegex;
-
-    /**
      * @inheritdoc
      */
     public $enableClientValidation = false;
@@ -141,7 +141,7 @@ class TexturizeValidator extends FilterValidator
         }
 
         $this->prepareDynamicTranslations();
-        $this->prepareHtmlSplitRegex();
+        self::prepareHtmlSplitRegex();
     }
 
     /**
@@ -218,8 +218,12 @@ class TexturizeValidator extends FilterValidator
      *
      * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L591
      */
-    protected function prepareHtmlSplitRegex()
+    protected static function prepareHtmlSplitRegex()
     {
+        if (strlen(self::$HTML_SPLIT_REGEX) > 0) {
+            return;
+        }
+
         $comments =
             '!'           // Start of comment, after the <.
             . '(?:'         // Unroll the loop: Consume everything until --> is found.
@@ -259,7 +263,7 @@ class TexturizeValidator extends FilterValidator
             .     ')'
             . ')/';
 
-        $this->htmlSplitRegex = $regex;
+        self::$HTML_SPLIT_REGEX = $regex;
     }
 
     /**
@@ -276,7 +280,7 @@ class TexturizeValidator extends FilterValidator
 
         preg_match_all('@\[/?([^<>&/\[\]\x00-\x20=]++)@', $value, $tagNames);
         $tagNames = $tagNames[1];
-        $valueSplit = preg_split($this->htmlSplitRegex, $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $valueSplit = preg_split(self::$HTML_SPLIT_REGEX, $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         foreach ($valueSplit as &$chunk) {
             if ($chunk[0] === '<') {
