@@ -1,5 +1,7 @@
 # yii2-tinymce-processor
 
+[![Build Status](https://travis-ci.org/Cyberitas/yii2-tinymce-processor.svg?branch=master)](https://travis-ci.org/Cyberitas/yii2-tinymce-processor)
+
 Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 
 ## Features
