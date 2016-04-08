@@ -85,4 +85,36 @@ final class HTMLSplitHelper
     {
         return preg_split(self::getHtmlSplitRegex(), $html, -1, $flags);
     }
+
+    /**
+     * Replace text within HTML elements only. From WordPress's
+     * `wp_replace_in_html_tags()`.
+     *
+     * @param string $haystack text to be formatted
+     * @param array $replacements set of text replacements ("from" => "to")
+     * @return string formatted string
+     * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L715
+     */
+    public static function replaceInTags($haystack, $replacements)
+    {
+        $splitHtml = self::splitHtml($haystack);
+        $changed = false;
+        $needles = array_keys($replacements);
+
+        for ($i = 1, $c = count($splitHtml); $i < $c; $i += 2) {
+            foreach ($needles as $needle) {
+                if (strpos($splitHtml[$i], $needle) !== false) {
+                    $splitHtml[$i] = strtr($spiltHtml[$i], $replacements);
+                    $changed = true;
+                    break; // look at next element after one strtr()
+                }
+            }
+        }
+
+        if ($changed) {
+            $haystack = implode($splitHtml);
+        }
+
+        return $haystack;
+    }
 }
