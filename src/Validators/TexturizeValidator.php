@@ -308,6 +308,12 @@ class TexturizeValidator extends FilterValidator
                     $chunk = preg_replace(array_keys($this->dynamicTranslations['dashes']),
                         array_values($this->dynamicTranslations['dashes']), $chunk);
                 }
+
+                if (preg_match('/(?<=\d)x\d/', $chunk) === 1) {
+                    $chunk = preg_replace('/\b(\d(?(?<=0)[\d\.,]+|[\d\.,]*))x(\d[\d\.,]*)\b/', '$1&#215;$2', $chunk);
+                }
+
+                $chunk = preg_replace(self::$APMERSAND_ENTITY_PATTERN, '&#038;', $chunk);
             }
         }
 
