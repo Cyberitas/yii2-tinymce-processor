@@ -272,13 +272,6 @@ class TexturizeValidator extends FilterValidator
      */
     protected function texturize($value)
     {
-        // $value = strtr($value, $this->staticTranslations);
-        //
-        // TODO: break this out into separate preg_replace calls for
-        // singleQuotes, doubleQuotes, and dashes
-        // foreach (array_values($this->dynamicTranslations) as $translations) {
-        //     $value = preg_replace(array_keys($translations), array_values($translations), $value);
-        // }
         $noTexturizeTagStack = [];
 
         preg_match_all('@\[/?([^<>&/\[\]\x00-\x20=]++)@', $value, $tagNames);
@@ -291,11 +284,23 @@ class TexturizeValidator extends FilterValidator
                     continue;
                 } else { // HTML element
                     $chunk = preg_replace(self::$APMERSAND_ENTITY_PATTERN, '&#038;', $chunk);
+                    $this->pushPopElement($chunk, $noTexturizeTagStack);
+                }
+            } elseif (trim($chunk) === '') { // newline between delimiters
+                continue;
+            } elseif (empty($noTexturizeTagStack)) {
+                $chunk = strtr($chunk, $this->staticTranslations);
+
+                if (strpos($chunk, "'") !== false) {
+                    $chunk = preg_replace(array_keys($this->dynamicTranslations['singleQuotes']),
+                        array_values($this->dynamicTranslations['singleQuotes']), $chunk);
+                    $chunk = $this->texturizePrimes($chunk, "'", $this->prime, $this->leftSingleQuote, $this->rightSingleQuote);
+                }
                 }
             }
         }
 
-        return $value;
+        return implode('', $valueSplit);
     }
 
     /**
