@@ -303,6 +303,11 @@ class TexturizeValidator extends FilterValidator
                     $chunk = $this->texturizePrimes($chunk, '"', $this->doublePrime, $this->leftDoubleQuote,
                         $this->rightDoubleQuote);
                 }
+
+                if (strpos($chunk, '-') !== false) {
+                    $chunk = preg_replace(array_keys($this->dynamicTranslations['dashes']),
+                        array_values($this->dynamicTranslations['dashes']), $chunk);
+                }
             }
         }
 
