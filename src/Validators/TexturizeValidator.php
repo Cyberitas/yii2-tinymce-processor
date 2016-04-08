@@ -296,6 +296,12 @@ class TexturizeValidator extends FilterValidator
                         array_values($this->dynamicTranslations['singleQuotes']), $chunk);
                     $chunk = $this->texturizePrimes($chunk, "'", $this->prime, $this->leftSingleQuote, $this->rightSingleQuote);
                 }
+
+                if (strpos($chunk, '"') !== false) {
+                    $chunk = preg_replace(array_keys($this->dynamicTranslations['doubleQuotes']),
+                        array_values($this->dynamicTranslations['doubleQuotes']), $chunk);
+                    $chunk = $this->texturizePrimes($chunk, '"', $this->doublePrime, $this->leftDoubleQuote,
+                        $this->rightDoubleQuote);
                 }
             }
         }
