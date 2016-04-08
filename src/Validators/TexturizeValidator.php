@@ -296,21 +296,43 @@ class TexturizeValidator extends FilterValidator
                 $chunk = strtr($chunk, $this->staticTranslations);
 
                 if (strpos($chunk, "'") !== false) {
-                    $chunk = preg_replace(array_keys($this->dynamicTranslations['singleQuotes']),
-                        array_values($this->dynamicTranslations['singleQuotes']), $chunk);
-                    $chunk = $this->texturizePrimes($chunk, "'", $this->prime, $this->leftSingleQuote, $this->rightSingleQuote);
+                    $chunk = preg_replace(
+                        array_keys($this->dynamicTranslations['singleQuotes']),
+                        array_values($this->dynamicTranslations['singleQuotes']),
+                        $chunk
+                    );
+
+                    $chunk = $this->texturizePrimes(
+                        $chunk,
+                        "'",
+                        $this->prime,
+                        $this->leftSingleQuote,
+                        $this->rightSingleQuote
+                    );
                 }
 
                 if (strpos($chunk, '"') !== false) {
-                    $chunk = preg_replace(array_keys($this->dynamicTranslations['doubleQuotes']),
-                        array_values($this->dynamicTranslations['doubleQuotes']), $chunk);
-                    $chunk = $this->texturizePrimes($chunk, '"', $this->doublePrime, $this->leftDoubleQuote,
-                        $this->rightDoubleQuote);
+                    $chunk = preg_replace(
+                        array_keys($this->dynamicTranslations['doubleQuotes']),
+                        array_values($this->dynamicTranslations['doubleQuotes']),
+                        $chunk
+                    );
+
+                    $chunk = $this->texturizePrimes(
+                        $chunk,
+                        '"',
+                        $this->doublePrime,
+                        $this->leftDoubleQuote,
+                        $this->rightDoubleQuote
+                    );
                 }
 
                 if (strpos($chunk, '-') !== false) {
-                    $chunk = preg_replace(array_keys($this->dynamicTranslations['dashes']),
-                        array_values($this->dynamicTranslations['dashes']), $chunk);
+                    $chunk = preg_replace(
+                        array_keys($this->dynamicTranslations['dashes']),
+                        array_values($this->dynamicTranslations['dashes']),
+                        $chunk
+                    );
                 }
 
                 if (preg_match('/(?<=\d)x\d/', $chunk) === 1) {
