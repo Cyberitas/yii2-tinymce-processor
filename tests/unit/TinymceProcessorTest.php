@@ -50,12 +50,55 @@ class TinymceProcessorTest extends TestCase
      */
     public function testRunsEssenceValidator()
     {
-        $output = $this->tmp->process("https://www.youtube.com/watch?v=9bZkp7q19f0");
+        $input = "https://www.youtube.com/watch?v=9bZkp7q19f0";
         $expected = <<<EOF
 <iframe width="480" height="270" src="https://www.youtube.com/embed/9bZkp7q19f0?feature=oembed" frameborder="0" allowfullscreen></iframe>
 EOF;
 
-        $this->assertTrue($this->tmp->validate());
+        $output = $this->tmp->process($input);
+        $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * TinymceProcessor content goes through TexturizeValidator and has
+     * appropriate formatting replacements performed
+     */
+    public function testRunsTexturizeValidator()
+    {
+        $input = <<<EOF
+This is "some text..." (c) (r) (tm)
+EOF;
+        $expected = <<<EOF
+This is &#8220;some text&#8230;&#8221; &#169; &#174; &#8242;
+EOF;
+
+        $output = $this->tmp->process($input);
+        $this->assertEquals($expected, $output);
+    }
+
+    /**
+     * TinymceProcessor configuration can enable, disable, and pass options to
+     * individual validators.
+     */
+    public function testConfiguration()
+    {
+        $this->tmp->configure([
+            'essence'   => false,
+            'texturize' => true
+        ]);
+
+        $input = <<<EOF
+Some of this should be processed...but some shouldn't.
+
+https://www.youtube.com/watch?v=9bZkp7q19f0
+EOF;
+        $expected = <<<EOF
+Some of this should be processed&#8230;but some shouldn&#8217;t.
+
+https://www.youtube.com/watch?v=9bZkp7q19f0
+EOF;
+
+        $output = $this->tmp->process($input);
         $this->assertEquals($expected, $output);
     }
 }
