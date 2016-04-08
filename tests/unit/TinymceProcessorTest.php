@@ -65,9 +65,11 @@ EOF;
      */
     public function testRunsTexturizeValidator()
     {
-        $input = "This is some text... (c) (r) (tm)";
+        $input = <<<EOF
+This is "some text..." (c) (r) (tm)
+EOF;
         $expected = <<<EOF
-This is some text&#8230; &#169; &#174; &#8242;
+This is &#8220;some text&#8230;&#8221; &#169; &#174; &#8242;
 EOF;
 
         $output = $this->tmp->process($input);
