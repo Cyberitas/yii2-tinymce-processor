@@ -43,6 +43,11 @@ class TexturizeValidator extends FilterValidator
     private static $APMERSAND_ENTITY_PATTERN = '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i';
 
     /**
+     * @const string flag for prime or quote replacement
+     */
+    private static $PRIME_OR_QUOTE_FLAG = '<!--prime-or-quote-->';
+
+    /**
      * @var string opening single quote character
      */
     public $leftSingleQuote = '&#8216;';
@@ -61,6 +66,16 @@ class TexturizeValidator extends FilterValidator
      * @var string closing double quote character
      */
     public $rightDoubleQuote = '&#8221;';
+
+    /**
+     * @var string prime character
+     */
+    public $prime = '&#8242;';
+
+    /**
+     * @var string double prime character
+     */
+    public $doublePrime = '&#8243;';
 
     /**
      * @var string em dash
@@ -319,5 +334,69 @@ class TexturizeValidator extends FilterValidator
                 array_pop($stack);
             }
         }
+    }
+
+    /**
+     * Determine whether to replace ' or " with a curly quote or prime. From
+     * WordPress' `wptexturize_primes()`.
+     *
+     * @param string $haystack text to be searched
+     * @param string $needle character to search for and replace
+     * @param string $prime character to use as replacement
+     * @param string $openQuote opening quote character already put in place
+     * @param string $closeQuote closing quote character to use
+     * @return string formatted $haystack text
+     * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L292
+     */
+    protected function texturizePrimes($haystack, $needle, $prime, $openQuote, $closeQuote)
+    {
+        $quotePattern = "/$needle(?=\\Z|[.,:;!?)}\\-\\]]|&gt;|" . $this->spaces . ")/";
+        $primePattern = "/(?<=\\d)$needle/";
+        $flagAfterDigit = "/(?<=\\d)" . self::$PRIME_OR_QUOTE_FLAG . "/";
+        $flagNoDigit = "/(?<!\\d)" . self::$PRIME_OR_QUOTE_FLAG . "/";
+
+        $sentences = explode($openQuote, $haystack);
+
+        foreach ($sentences as $key => &$sentence) {
+            if (strpos($sentence, $needle) === false) {
+                continue;
+            } elseif ($key !== 0 && substr_count($sentence, $closeQuote) === 0) {
+                $sentence = preg_replace($quotePattern, self::$PRIME_OR_QUOTE_FLAG, $sentence, -1, $count);
+
+                if ($count > 1) { // multiple closing quotes
+                    $sentence = preg_replace($flagNoDigit, $closeQuote, $sentence, -1, $count2);
+
+                    if ($count2 === 0) { // quote followed by period?
+                        $count2 = substr_count($sentence, self::$PRIME_OR_QUOTE_FLAG . ".");
+
+                        if ($count2 > 0) { // rightmost ". is the end of the quotation
+                            $pos = strrpos($sentence, self::$PRIME_OR_QUOTE_FLAG . ".");
+                        } else { // make rightmost candidate a closing quote
+                            $pos = strrpos($sentence, self::$PRIME_OR_QUOTE_FLAG);
+                        }
+
+                        $sentence = substr_replace($sentence, $closeQuote, $pos, strlen(self::$PRIME_OR_QUOTE_FLAG));
+                    }
+
+                    $sentence = preg_replace($primePattern, $prime, $sentence);
+                    $sentence = preg_replace($flagAfterDigit, $prime, $sentence);
+                    $sentence = preg_replace(self::$PRIME_OR_QUOTE_FLAG, $closeQuote, $sentence);
+                } elseif ($count === 1) { // one closing quote found, replace it before primes
+                    $sentence = str_replace(self::$PRIME_OR_QUOTE_FLAG, $closeQuote, $sentence);
+                    $sentence = preg_replace($primePattern, $prime, $sentence);
+                } else { // no closing quotes found, just primes
+                    $sentence = preg_replace($primePattern, $prime, $sentence);
+                }
+            } else {
+                $sentence = preg_replace($primePattern, $prime, $sentence);
+                $sentence = preg_replace($quotePattern, $closeQuote, $sentence);
+            }
+
+            if ($needle === '"' && strpos($sentence, '"' !== false)) {
+                $sentence = str_replace('"', $closeQuote, $sentence);
+            }
+        }
+
+        return implode($openQuote, $sentences);
     }
 }
