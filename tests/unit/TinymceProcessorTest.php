@@ -60,6 +60,25 @@ EOF;
     }
 
     /**
+     * TinymceProcessor content goes through HtmlPurifierValidator and has
+     * unwanted tags and attributes removed
+     */
+    public function testRunsHtmlPurifierValidator()
+    {
+        $input = <<<EOF
+This is some <a onclick="alert('Boo!')">bad content</a>.
+
+<script>alert('Boo!')</script>
+EOF;
+        $expected = <<<EOF
+<p>This is some <a>bad content</a>.</p>
+EOF;
+
+        $output = $this->tmp->process($input);
+        $this->assertEquals($expected, $output);
+    }
+
+    /**
      * TinymceProcessor content goes through TexturizeValidator and has
      * appropriate formatting replacements performed
      */

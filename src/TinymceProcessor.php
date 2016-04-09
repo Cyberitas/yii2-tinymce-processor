@@ -13,6 +13,7 @@ namespace Cyberitas\TinymceProcessor;
 use yii\base\Model;
 use Cyberitas\TinymceProcessor\Validators\AutoParagraphValidator;
 use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
+use Cyberitas\TinymceProcessor\Validators\HtmlPurifierValidator;
 use Cyberitas\TinymceProcessor\Validators\TexturizeValidator;
 
 /**
@@ -25,6 +26,7 @@ class TinymceProcessor extends Model
      * @const array validators in the order they should be run
      */
     private static $VALIDATORS = [
+        'purify',
         'essence',
         'texturize',
         'autop'
@@ -36,6 +38,7 @@ class TinymceProcessor extends Model
     private static $DEFAULT_CONFIG = [
         'autop'     => true,
         'essence'   => true,
+        'purify'    => true,
         'texturize' => true
     ];
 
@@ -127,6 +130,9 @@ class TinymceProcessor extends Model
                         break;
                     case 'essence':
                         array_push($rule, EssenceValidator::className());
+                        break;
+                    case 'purify':
+                        array_push($rule, HtmlPurifierValidator::className());
                         break;
                     case 'texturize':
                         array_push($rule, TexturizeValidator::className());
