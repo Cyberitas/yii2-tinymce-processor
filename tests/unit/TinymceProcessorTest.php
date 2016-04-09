@@ -69,7 +69,7 @@ EOF;
 This is "some text..." (c) (r) (tm)
 EOF;
         $expected = <<<EOF
-This is &#8220;some text&#8230;&#8221; &#169; &#174; &#8242;
+<p>This is &#8220;some text&#8230;&#8221; &#169; &#174; &#8242;</p>
 EOF;
 
         $output = $this->tmp->process($input);
@@ -93,9 +93,8 @@ Some of this should be processed...but some shouldn't.
 https://www.youtube.com/watch?v=9bZkp7q19f0
 EOF;
         $expected = <<<EOF
-Some of this should be processed&#8230;but some shouldn&#8217;t.
-
-https://www.youtube.com/watch?v=9bZkp7q19f0
+<p>Some of this should be processed&#8230;but some shouldn&#8217;t.</p>
+<p>https://www.youtube.com/watch?v=9bZkp7q19f0</p>
 EOF;
 
         $output = $this->tmp->process($input);
