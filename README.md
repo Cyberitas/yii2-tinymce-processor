@@ -9,6 +9,7 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 - [Essence][] oEmbed processing
 - Texturization, replicating [`wptexturize()`](https://codex.wordpress.org/Function_Reference/wptexturize)
 - Auto-paragraphing, replicating [`wpautop()`](https://codex.wordpress.org/Function_Reference/wpautop)
+- [HTMLPurifier][] filtering, via Yii's [`HtmlPufirier` helper](http://www.yiiframework.com/doc-2.0/yii-helpers-htmlpurifier.html)
 
 ## Usage
 
@@ -21,6 +22,11 @@ $tmp = new TinymceProcessor();
 $tmp->configure([
     'autop' => true,
     'essence' => true,
+    'purify' => [
+        'purifierConfig' => [
+            'Attr.EnableId' => true
+        ]
+    ],
     'texturize' => [
         'leftDoubleQuote' => '&laquo;',
         'rightDoubleQuote' => '&raquo;'
@@ -41,4 +47,5 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 
 [Essence]: http://essence.github.io/essence/
+[HTMLPurifier]: http://htmlpurifier.org/
 [Cyberitas Technologies, LLC]: http://www.cyberitas.com/
