@@ -16,6 +16,24 @@ use yii\validators\FilterValidator;
 class EssenceValidator extends FilterValidator
 {
     /**
+     * @var array Essence provider configuration
+     * @see https://github.com/essence/essence/tree/3.1.1#configuration
+     */
+    public $essenceConfig = [];
+
+    /**
+     * @var callable URL replacement callback
+     * @see https://github.com/essence/essence/tree/3.1.1#replacing-urls-in-text
+     */
+    public $replaceTemplate = null;
+
+    /**
+     * @var array options to pass to the oEmbed providers
+     * @see https://github.com/essence/essence/tree/3.1.1#configuring-providers
+     */
+    public $replaceOptions = [];
+
+    /**
      * @inheritdoc
      */
     public $enableClientValidation = false;
@@ -30,9 +48,22 @@ class EssenceValidator extends FilterValidator
      */
     public function init()
     {
-        $this->Essence = new Essence();
-        $this->filter = array($this->Essence, 'replace');
+        $this->filter = array($this, 'replace');
 
         parent::init();
+
+        $this->Essence = new Essence($this->essenceConfig);
+    }
+
+    /**
+     * Replace URLs with oEmbed media with Essence.
+     *
+     * @param string $value HTML to process
+     * @return string processed HTML
+     * @see https://github.com/essence/essence/blob/3.1.1/lib/Essence/Replacer.php#L67
+     */
+    protected function replace($value)
+    {
+        return $this->Essence->replace($value, $this->replaceTemplate, $this->replaceOptions);
     }
 }
