@@ -1,6 +1,7 @@
 composer.phar
 composer.lock
-/vendor/
+output/
+vendor/
 
 tests/_output/*
 tests/runtime/*
