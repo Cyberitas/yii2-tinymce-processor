@@ -23,13 +23,14 @@ use Cyberitas\TinymceProcessor\Validators\TexturizeValidator;
 class TinymceProcessor extends Model
 {
     /**
-     * @var array validators in the order they should be run
+     * @var array map of validator keys to classes in the order they should be
+     * run
      */
     protected static $VALIDATORS = [
-        'purify',
-        'essence',
-        'texturize',
-        'autop'
+        'purify'    => '\Cyberitas\TinymceProcessor\Validators\HtmlPurifierValidator',
+        'essence'   => '\Cyberitas\TinymceProcessor\Validators\EssenceValidator',
+        'texturize' => '\Cyberitas\TinymceProcessor\Validators\TexturizeValidator',
+        'autop'     => '\Cyberitas\TinymceProcessor\Validators\AutoParagraphValidator',
     ];
 
     /**
@@ -118,29 +119,11 @@ class TinymceProcessor extends Model
      */
     private function configureRules()
     {
-        foreach (self::$VALIDATORS as $validator) {
+        foreach (self::$VALIDATORS as $validator => $className) {
             // If the validator is not disabled...
             if (array_key_exists($validator, $this->config) && false !== $this->config[$validator]) {
-                $rule = ['content'];
-
                 // ...add it to the list of rules.
-                switch ($validator) {
-                    case 'autop':
-                        array_push($rule, AutoParagraphValidator::className());
-                        break;
-                    case 'essence':
-                        array_push($rule, EssenceValidator::className());
-                        break;
-                    case 'purify':
-                        array_push($rule, HtmlPurifierValidator::className());
-                        break;
-                    case 'texturize':
-                        array_push($rule, TexturizeValidator::className());
-                        break;
-                    // If it doesn't exist, don't add it.
-                    default:
-                        continue 2;
-                }
+                $rule = ['content', $className];
 
                 // If configuration is provided for the validator, include it in
                 // the rule.
