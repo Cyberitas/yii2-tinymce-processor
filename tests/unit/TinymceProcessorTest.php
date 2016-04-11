@@ -3,7 +3,7 @@
  * TinyMCE Processor Test
  *
  * @copyright 2016 Cyberitas Technologies, LLC
- * @license LGPL-3.0+
+ * @license LGPL v3
  */
 namespace Cyberitas\TinymceProcessor\Tests\Unit;
 
