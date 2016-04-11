@@ -17,7 +17,7 @@ use yii\validators\FilterValidator;
 class TexturizeValidator extends FilterValidator
 {
     /**
-     * @const array default static character replacements
+     * @var array default static character replacements
      */
     private static $DEFAULT_STATIC_TRANSLATIONS = [
         '(c)'  => '&#169;',
@@ -27,7 +27,7 @@ class TexturizeValidator extends FilterValidator
     ];
 
     /**
-     * @const array default tags whose contents should not be texturized
+     * @var array default tags whose contents should not be texturized
      */
     private static $DEFAULT_NO_TEXTURIZE_TAGS = [
         'pre',
@@ -39,12 +39,12 @@ class TexturizeValidator extends FilterValidator
     ];
 
     /**
-     * @const string ampersand entity replacement pattern
+     * @var string ampersand entity replacement pattern
      */
     private static $APMERSAND_ENTITY_PATTERN = '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i';
 
     /**
-     * @const string flag for prime or quote replacement
+     * @var string flag for prime or quote replacement
      */
     private static $PRIME_OR_QUOTE_FLAG = '<!--prime-or-quote-->';
 

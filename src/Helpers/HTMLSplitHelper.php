@@ -14,7 +14,7 @@ namespace Cyberitas\TinymceProcessor\Helpers;
 final class HTMLSplitHelper
 {
     /**
-     * @const string regular expression for splitting an HTML string
+     * @var string regular expression for splitting an HTML string
      */
     protected static $HTML_SPLIT_REGEX;
 

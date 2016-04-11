@@ -23,7 +23,7 @@ use Cyberitas\TinymceProcessor\Validators\TexturizeValidator;
 class TinymceProcessor extends Model
 {
     /**
-     * @const array validators in the order they should be run
+     * @var array validators in the order they should be run
      */
     private static $VALIDATORS = [
         'purify',
@@ -33,7 +33,7 @@ class TinymceProcessor extends Model
     ];
 
     /**
-     * @const array default processor configuration
+     * @var array default processor configuration
      */
     private static $DEFAULT_CONFIG = [
         'autop'     => true,

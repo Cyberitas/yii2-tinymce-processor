@@ -17,7 +17,7 @@ use yii\validators\FilterValidator;
 class AutoParagraphValidator extends FilterValidator
 {
     /**
-     * @const array list of HTML block elements not to wrap in paragraphs
+     * @var array list of HTML block elements not to wrap in paragraphs
      */
     private static $BLOCK_ELEMENTS = [ 'table', 'thead', 'tfoot', 'caption', 'col', 'colgroup', 'tbody', 'tr', 'td',
         'th', 'div', 'dl', 'dd', 'dt', 'ul', 'ol', 'li', 'pre', 'form', 'map', 'area', 'blockquote', 'address', 'math',
@@ -25,7 +25,7 @@ class AutoParagraphValidator extends FilterValidator
         'nav', 'figure', 'figcaption', 'details', 'menu', 'summary', 'iframe' ];
 
     /**
-     * @const string placeholder flag for newlines
+     * @var string placeholder flag for newlines
      */
     private static $NEWLINE_PLACEHOLDER_FLAG = '<!-- cynewline -->';
 
