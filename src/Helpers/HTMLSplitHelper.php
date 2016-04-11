@@ -16,7 +16,7 @@ final class HTMLSplitHelper
     /**
      * @var string regular expression for splitting an HTML string
      */
-    protected static $HTML_SPLIT_REGEX;
+    private static $HTML_SPLIT_REGEX;
 
     /**
      * Prepare the regular expression for splitting an HTML string. From
@@ -25,7 +25,7 @@ final class HTMLSplitHelper
      * @return string regular expression for splitting an HTML string
      * @see https://core.trac.wordpress.org/browser/tags/4.4.2/src/wp-includes/formatting.php#L591
      */
-    protected static function getHtmlSplitRegex()
+    private static function getHtmlSplitRegex()
     {
         if (strlen(self::$HTML_SPLIT_REGEX) === 0) {
             $comments =

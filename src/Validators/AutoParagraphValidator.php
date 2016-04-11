@@ -19,7 +19,7 @@ class AutoParagraphValidator extends FilterValidator
     /**
      * @var array list of HTML block elements not to wrap in paragraphs
      */
-    private static $BLOCK_ELEMENTS = [ 'table', 'thead', 'tfoot', 'caption', 'col', 'colgroup', 'tbody', 'tr', 'td',
+    protected static $BLOCK_ELEMENTS = [ 'table', 'thead', 'tfoot', 'caption', 'col', 'colgroup', 'tbody', 'tr', 'td',
         'th', 'div', 'dl', 'dd', 'dt', 'ul', 'ol', 'li', 'pre', 'form', 'map', 'area', 'blockquote', 'address', 'math',
         'style', 'p', 'h[1-6]', 'hr', 'fieldset', 'legend', 'section', 'article', 'aside', 'hgroup', 'header', 'footer',
         'nav', 'figure', 'figcaption', 'details', 'menu', 'summary', 'iframe' ];
@@ -27,7 +27,7 @@ class AutoParagraphValidator extends FilterValidator
     /**
      * @var string placeholder flag for newlines
      */
-    private static $NEWLINE_PLACEHOLDER_FLAG = '<!-- cynewline -->';
+    protected static $NEWLINE_PLACEHOLDER_FLAG = '<!-- cynewline -->';
 
     /**
      * @var bool convert additional line breaks to HTML line breaks

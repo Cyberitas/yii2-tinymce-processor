@@ -41,7 +41,7 @@ class EssenceValidator extends FilterValidator
     /**
      * @var Essence\Essence Instance of Essence for processing oEmbed media
      */
-    private $Essence = null;
+    protected $Essence = null;
 
     /**
      * @inheritdoc

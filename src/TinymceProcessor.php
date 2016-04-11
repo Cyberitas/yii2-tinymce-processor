@@ -25,7 +25,7 @@ class TinymceProcessor extends Model
     /**
      * @var array validators in the order they should be run
      */
-    private static $VALIDATORS = [
+    protected static $VALIDATORS = [
         'purify',
         'essence',
         'texturize',
@@ -35,7 +35,7 @@ class TinymceProcessor extends Model
     /**
      * @var array default processor configuration
      */
-    private static $DEFAULT_CONFIG = [
+    protected static $DEFAULT_CONFIG = [
         'autop'     => true,
         'essence'   => true,
         'purify'    => true,
