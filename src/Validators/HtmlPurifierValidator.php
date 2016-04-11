@@ -41,6 +41,7 @@ class HtmlPurifierValidator extends FilterValidator
      *
      * @param string $value HTML to purify
      * @return string purified HTML
+     * @see http://www.yiiframework.com/doc-2.0/yii-helpers-basehtmlpurifier.html#process()-detail
      */
     protected function purify($value)
     {
