@@ -5,7 +5,7 @@
  * @copyright 2016 Cyberitas Technologies, LLC
  * @license LGPL v3
  */
-namespace Cyberitas\TinymceProcessor\Tests\unit;
+namespace Cyberitas\TinymceProcessor\Tests\unit\Validators;
 
 use Cyberitas\TinymceProcessor\Tests\TestCase;
 use Cyberitas\TinymceProcessor\Tests\data\models\TestModel;
@@ -22,7 +22,7 @@ class EssenceValidatorTest extends TestCase
     protected $tester;
 
     /**
-     * @var \yiiunit\data\validators\models\FakedValidationModel;
+     * @var TestModel
      */
     protected $m;
 
