@@ -5,10 +5,10 @@
  * @copyright 2016 Cyberitas Technologies, LLC
  * @license LGPL v3
  */
-namespace Cyberitas\TinymceProcessor\Tests\Unit;
+namespace Cyberitas\TinymceProcessor\Tests\unit;
 
 use Cyberitas\TinymceProcessor\Tests\TestCase;
-use Cyberitas\TinymceProcessor\Tests\Data\Models\TestModel;
+use Cyberitas\TinymceProcessor\Tests\data\models\TestModel;
 use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
 
 /**

@@ -1,5 +1,5 @@
 <?php
-namespace Cyberitas\TinymceProcessor\Tests\Data\Models;
+namespace Cyberitas\TinymceProcessor\Tests\data\models;
 
 use yii\base\Model;
 
