@@ -40,7 +40,7 @@ class TinymceProcessor extends Model
         'autop'     => true,
         'essence'   => true,
         'purify'    => true,
-        'texturize' => true
+        'texturize' => true,
     ];
 
     /**
