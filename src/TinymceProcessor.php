@@ -67,11 +67,13 @@ class TinymceProcessor extends Model
     ];
 
     /**
-     * Initialize and configure the processor.
+     * @inheritdoc
      */
     public function init()
     {
         $this->config = array_merge(self::$DEFAULT_CONFIG, $this->config);
+
+        return parent::init();
     }
 
     /**
