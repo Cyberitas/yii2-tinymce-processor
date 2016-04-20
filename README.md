@@ -50,7 +50,7 @@ class TinymceWidget extends InputWidget
 {
     public function run()
     {
-        TinymceAssets::register($view);
+        TinymceAssets::register($this->view);
         $this->view->registerJs('tinymce.init({selector: "textarea"});');
         echo Html::textarea($this->name, $this->value);
     }
