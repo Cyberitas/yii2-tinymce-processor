@@ -44,14 +44,20 @@ class TinymceProcessor extends Model
     ];
 
     /**
+     * @var array processor and validator configuration. Should be an
+     * associative array with keys being the validators (e.g. `"essence"`) and
+     * values of:
+     *
+     * - `true`: enable the validator with its default configuration
+     * - array: enable the validator and override the default configuration
+     * - `false`: disable the validator
+     */
+    public $config = [];
+
+    /**
      * @var string content from a TinyMCE editor to be processed
      */
     public $content;
-
-    /**
-     * @var array processor and validator configuration
-     */
-    protected $config;
 
     /**
      * @var array validation rules and configuration
@@ -61,26 +67,11 @@ class TinymceProcessor extends Model
     ];
 
     /**
-     * @inheritdoc
+     * Initialize and configure the processor.
      */
     public function init()
     {
-        $this->config = self::$DEFAULT_CONFIG;
-    }
-
-    /**
-     * Conifgure the processor and validators.
-     *
-     * @param array $config configuration array. Should be an associative array
-     * with keys being the validators (e.g. `"essence"`) and values of:
-     *
-     * - `true`: enable the validator with its default configuration
-     * - array: enable the validator and override the default configuration
-     * - `false`: disable the validator
-     */
-    public function configure($config)
-    {
-        $this->config = array_replace($this->config, $config);
+        $this->config = array_merge(self::$DEFAULT_CONFIG, $this->config);
     }
 
     /**

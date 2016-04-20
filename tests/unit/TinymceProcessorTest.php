@@ -101,10 +101,10 @@ EOF;
      */
     public function testConfiguration()
     {
-        $this->tmp->configure([
+        $tmp = new TinymceProcessor(['config' => [
             'essence'   => false,
             'texturize' => true
-        ]);
+        ]]);
 
         $input = <<<EOF
 Some of this should be processed...but some shouldn't.
@@ -116,7 +116,7 @@ EOF;
 <p>https://www.youtube.com/watch?v=9bZkp7q19f0</p>
 EOF;
 
-        $output = $this->tmp->process($input);
+        $output = $tmp->process($input);
         $this->assertEquals($expected, $output);
     }
 }

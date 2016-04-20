@@ -23,8 +23,7 @@ composer require "cyberitas/yii2-tinymce-processor"
 ```php
 use Cyberitas\TinymceProcessor\TinymceProcessor;
 
-$tmp = new TinymceProcessor();
-$tmp->configure([
+$tmp = new TinymceProcessor(['config' => [
     'autop' => true,
     'essence' => true,
     'purify' => [
@@ -36,7 +35,7 @@ $tmp->configure([
         'leftDoubleQuote' => '&laquo;',
         'rightDoubleQuote' => '&raquo;'
     ]
-]);
+]]);
 $output = $tmp->process("This is some content from a TinyMCE editor.");
 ```
 
