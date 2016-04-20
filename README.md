@@ -10,6 +10,7 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 - Texturization, replicating [`wptexturize()`](https://codex.wordpress.org/Function_Reference/wptexturize)
 - Auto-paragraphing, replicating [`wpautop()`](https://codex.wordpress.org/Function_Reference/wpautop)
 - [HTMLPurifier][] filtering, via Yii's [`HtmlPufirier` helper](http://www.yiiframework.com/doc-2.0/yii-helpers-htmlpurifier.html)
+- Yii 2 asset bundle for easy editor insertion
 
 ## Usage
 
@@ -17,7 +18,11 @@ Yii 2 extension providing WordPress-style text processing from a TinyMCE editor.
 composer require "cyberitas/yii2-tinymce-processor"
 ```
 
+### Processor
+
 ```php
+use Cyberitas\TinymceProcessor\TinymceProcessor;
+
 $tmp = new TinymceProcessor();
 $tmp->configure([
     'autop' => true,
@@ -33,6 +38,24 @@ $tmp->configure([
     ]
 ]);
 $output = $tmp->process("This is some content from a TinyMCE editor.");
+```
+
+### Asset Bundle
+
+```php
+use Cyberitas\TinymceProcessor\Assets\TinymceAssets;
+use yii\helpers\Html;
+use yii\widgets\InputWidget;
+
+class TinymceWidget extends InputWidget
+{
+    public function run()
+    {
+        TinymceAssets::register($view);
+        $this->view->registerJs('tinymce.init({selector: "textarea"});');
+        echo Html::textarea($this->name, $this->value);
+    }
+}
 ```
 
 ## Copyright
