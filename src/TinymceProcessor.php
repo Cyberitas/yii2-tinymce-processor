@@ -11,10 +11,6 @@
 namespace Cyberitas\TinymceProcessor;
 
 use yii\base\Model;
-use Cyberitas\TinymceProcessor\Validators\AutoParagraphValidator;
-use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
-use Cyberitas\TinymceProcessor\Validators\HtmlPurifierValidator;
-use Cyberitas\TinymceProcessor\Validators\TexturizeValidator;
 
 /**
  * Model that applies all text processing to an input value from a TinyMCE
