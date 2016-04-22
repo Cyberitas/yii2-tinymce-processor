@@ -8,7 +8,7 @@
 namespace Cyberitas\TinymceProcessor\Tests\unit\Validators;
 
 use Cyberitas\TinymceProcessor\Tests\TestCase;
-use Cyberitas\TinymceProcessor\Tests\data\models\TestModel;
+use Cyberitas\TinymceProcessor\Tests\_support\models\TestModel;
 use Cyberitas\TinymceProcessor\Validators\EssenceValidator;
 
 /**
