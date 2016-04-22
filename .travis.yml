@@ -12,4 +12,6 @@ install:
 - composer self-update
 - composer global require "fxp/composer-asset-plugin:~1.1.1"
 - composer install
-script: composer exec "codecept run"
+script: composer exec "codecept run --coverage --coverage-xml"
+after_success:
+- composer exec "coveralls"
