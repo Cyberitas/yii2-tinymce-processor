@@ -104,7 +104,7 @@ final class HTMLSplitHelper
         for ($i = 1, $c = count($splitHtml); $i < $c; $i += 2) {
             foreach ($needles as $needle) {
                 if (strpos($splitHtml[$i], $needle) !== false) {
-                    $splitHtml[$i] = strtr($spiltHtml[$i], $replacements);
+                    $splitHtml[$i] = strtr($splitHtml[$i], $replacements);
                     $changed = true;
                     break; // look at next element after one strtr()
                 }

@@ -27,7 +27,7 @@ class AutoParagraphValidator extends FilterValidator
     protected static $BLOCK_ELEMENTS = [ 'table', 'thead', 'tfoot', 'caption', 'col', 'colgroup', 'tbody', 'tr', 'td',
         'th', 'div', 'dl', 'dd', 'dt', 'ul', 'ol', 'li', 'pre', 'form', 'map', 'area', 'blockquote', 'address', 'math',
         'style', 'p', 'h[1-6]', 'hr', 'fieldset', 'legend', 'section', 'article', 'aside', 'hgroup', 'header', 'footer',
-        'nav', 'figure', 'figcaption', 'details', 'menu', 'summary', 'iframe' ];
+        'nav', 'figure', 'figcaption', 'details', 'menu', 'summary', 'iframe', 'script' ];
 
     /**
      * @var bool convert additional line breaks to HTML line breaks
