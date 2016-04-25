@@ -17,6 +17,16 @@ use yii\validators\FilterValidator;
 class TexturizeValidator extends FilterValidator
 {
     /**
+     * @const ampersand entity replacement pattern
+     */
+    const AMPERSAND_ENTITY_PATTERN = '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i';
+
+    /**
+     * @const flag for prime or quote replacement
+     */
+    const PRIME_OR_QUOTE_FLAG = '<!--prime-or-quote-->';
+
+    /**
      * @var array default static character replacements
      */
     protected static $DEFAULT_STATIC_TRANSLATIONS = [
@@ -37,16 +47,6 @@ class TexturizeValidator extends FilterValidator
         'script',
         'tt'
     ];
-
-    /**
-     * @var string ampersand entity replacement pattern
-     */
-    protected static $APMERSAND_ENTITY_PATTERN = '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i';
-
-    /**
-     * @var string flag for prime or quote replacement
-     */
-    protected static $PRIME_OR_QUOTE_FLAG = '<!--prime-or-quote-->';
 
     /**
      * @var string opening single quote character
@@ -94,6 +94,11 @@ class TexturizeValidator extends FilterValidator
     public $noTexturizeTags;
 
     /**
+     * @inheritdoc
+     */
+    public $enableClientValidation = false;
+
+    /**
      * @var array set of static character replacements
      */
     protected $staticTranslations;
@@ -112,11 +117,6 @@ class TexturizeValidator extends FilterValidator
      * `wp_spaces_regexp()`
      */
     protected $spaces = '[\r\n\t ]|\xC2\xA0|&nbsp;';
-
-    /**
-     * @inheritdoc
-     */
-    public $enableClientValidation = false;
 
     /**
      * @inheritdoc
@@ -160,7 +160,7 @@ class TexturizeValidator extends FilterValidator
                 if (substr($chunk, 0, 4 === '<!--')) { // HTML comment
                     continue;
                 } else { // HTML element
-                    $chunk = preg_replace(self::$APMERSAND_ENTITY_PATTERN, '&#038;', $chunk);
+                    $chunk = preg_replace(self::AMPERSAND_ENTITY_PATTERN, '&#038;', $chunk);
                     $this->pushPopElement($chunk, $noTexturizeTagStack);
                 }
             } elseif (trim($chunk) === '') { // newline between delimiters
@@ -212,7 +212,7 @@ class TexturizeValidator extends FilterValidator
                     $chunk = preg_replace('/\b(\d(?(?<=0)[\d\.,]+|[\d\.,]*))x(\d[\d\.,]*)\b/', '$1&#215;$2', $chunk);
                 }
 
-                $chunk = preg_replace(self::$APMERSAND_ENTITY_PATTERN, '&#038;', $chunk);
+                $chunk = preg_replace(self::AMPERSAND_ENTITY_PATTERN, '&#038;', $chunk);
             }
         }
 
@@ -273,8 +273,8 @@ class TexturizeValidator extends FilterValidator
     {
         $quotePattern = "/$needle(?=\\Z|[.,:;!?)}\\-\\]]|&gt;|" . $this->spaces . ")/";
         $primePattern = "/(?<=\\d)$needle/";
-        $flagAfterDigit = "/(?<=\\d)" . self::$PRIME_OR_QUOTE_FLAG . "/";
-        $flagNoDigit = "/(?<!\\d)" . self::$PRIME_OR_QUOTE_FLAG . "/";
+        $flagAfterDigit = "/(?<=\\d)" . self::PRIME_OR_QUOTE_FLAG . "/";
+        $flagNoDigit = "/(?<!\\d)" . self::PRIME_OR_QUOTE_FLAG . "/";
 
         $sentences = explode($openQuote, $haystack);
 
@@ -282,28 +282,28 @@ class TexturizeValidator extends FilterValidator
             if (strpos($sentence, $needle) === false) {
                 continue;
             } elseif ($key !== 0 && substr_count($sentence, $closeQuote) === 0) {
-                $sentence = preg_replace($quotePattern, self::$PRIME_OR_QUOTE_FLAG, $sentence, -1, $count);
+                $sentence = preg_replace($quotePattern, self::PRIME_OR_QUOTE_FLAG, $sentence, -1, $count);
 
                 if ($count > 1) { // multiple closing quotes
                     $sentence = preg_replace($flagNoDigit, $closeQuote, $sentence, -1, $count2);
 
                     if ($count2 === 0) { // quote followed by period?
-                        $count2 = substr_count($sentence, self::$PRIME_OR_QUOTE_FLAG . ".");
+                        $count2 = substr_count($sentence, self::PRIME_OR_QUOTE_FLAG . ".");
 
                         if ($count2 > 0) { // rightmost ". is the end of the quotation
-                            $pos = strrpos($sentence, self::$PRIME_OR_QUOTE_FLAG . ".");
+                            $pos = strrpos($sentence, self::PRIME_OR_QUOTE_FLAG . ".");
                         } else { // make rightmost candidate a closing quote
-                            $pos = strrpos($sentence, self::$PRIME_OR_QUOTE_FLAG);
+                            $pos = strrpos($sentence, self::PRIME_OR_QUOTE_FLAG);
                         }
 
-                        $sentence = substr_replace($sentence, $closeQuote, $pos, strlen(self::$PRIME_OR_QUOTE_FLAG));
+                        $sentence = substr_replace($sentence, $closeQuote, $pos, strlen(self::PRIME_OR_QUOTE_FLAG));
                     }
 
                     $sentence = preg_replace($primePattern, $prime, $sentence);
                     $sentence = preg_replace($flagAfterDigit, $prime, $sentence);
-                    $sentence = preg_replace(self::$PRIME_OR_QUOTE_FLAG, $closeQuote, $sentence);
+                    $sentence = preg_replace(self::PRIME_OR_QUOTE_FLAG, $closeQuote, $sentence);
                 } elseif ($count === 1) { // one closing quote found, replace it before primes
-                    $sentence = str_replace(self::$PRIME_OR_QUOTE_FLAG, $closeQuote, $sentence);
+                    $sentence = str_replace(self::PRIME_OR_QUOTE_FLAG, $closeQuote, $sentence);
                     $sentence = preg_replace($primePattern, $prime, $sentence);
                 } else { // no closing quotes found, just primes
                     $sentence = preg_replace($primePattern, $prime, $sentence);

@@ -17,17 +17,17 @@ use yii\validators\FilterValidator;
 class AutoParagraphValidator extends FilterValidator
 {
     /**
+     * @const string placeholder flag for newlines
+     */
+    const NEWLINE_PLACEHOLDER_FLAG = '<!-- cynewline -->';
+
+    /**
      * @var array list of HTML block elements not to wrap in paragraphs
      */
     protected static $BLOCK_ELEMENTS = [ 'table', 'thead', 'tfoot', 'caption', 'col', 'colgroup', 'tbody', 'tr', 'td',
         'th', 'div', 'dl', 'dd', 'dt', 'ul', 'ol', 'li', 'pre', 'form', 'map', 'area', 'blockquote', 'address', 'math',
         'style', 'p', 'h[1-6]', 'hr', 'fieldset', 'legend', 'section', 'article', 'aside', 'hgroup', 'header', 'footer',
         'nav', 'figure', 'figcaption', 'details', 'menu', 'summary', 'iframe' ];
-
-    /**
-     * @var string placeholder flag for newlines
-     */
-    protected static $NEWLINE_PLACEHOLDER_FLAG = '<!-- cynewline -->';
 
     /**
      * @var bool convert additional line breaks to HTML line breaks
@@ -103,7 +103,7 @@ class AutoParagraphValidator extends FilterValidator
         $value = preg_replace('!(</' . $allBlocks . '>)!', "$1\n\n", $value);
 
         // Placehold newlines within tags
-        $value = HTMLSplitHelper::replaceInTags($value, array("\n" => self::$NEWLINE_PLACEHOLDER_FLAG));
+        $value = HTMLSplitHelper::replaceInTags($value, array("\n" => self::NEWLINE_PLACEHOLDER_FLAG));
 
         if (strpos($value, '<option') !== false) { // collapse line breaks around <option>s
             $value = preg_replace('|\s*<option|', '<option', $value);
@@ -181,8 +181,8 @@ class AutoParagraphValidator extends FilterValidator
         }
 
         // Restore newlines
-        if (strpos($value, self::$NEWLINE_PLACEHOLDER_FLAG) !== false) {
-            $value = str_replace(self::$NEWLINE_PLACEHOLDER_FLAG, "\n", $value);
+        if (strpos($value, self::NEWLINE_PLACEHOLDER_FLAG) !== false) {
+            $value = str_replace(self::NEWLINE_PLACEHOLDER_FLAG, "\n", $value);
         }
 
         return trim($value);
