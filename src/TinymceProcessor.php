@@ -117,7 +117,7 @@ class TinymceProcessor extends Model
                 // If configuration is provided for the validator, include it in
                 // the rule.
                 if (is_array($this->config[$validator])) {
-                    array_push($v, $this->config[$validator]);
+                    $rule = array_merge($rule, $this->config[$validator]);
                 }
 
                 array_push($this->rules, $rule);

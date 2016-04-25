@@ -102,17 +102,22 @@ EOF;
     public function testConfiguration()
     {
         $tmp = new TinymceProcessor(['config' => [
+            'autop'     => [
+                'convertBr' => false
+            ],
             'essence'   => false,
             'texturize' => true
         ]]);
 
         $input = <<<EOF
-Some of this should be processed...but some shouldn't.
+Some of this should be processed...
+but some shouldn't.
 
 https://www.youtube.com/watch?v=9bZkp7q19f0
 EOF;
         $expected = <<<EOF
-<p>Some of this should be processed&#8230;but some shouldn&#8217;t.</p>
+<p>Some of this should be processed&#8230;
+but some shouldn&#8217;t.</p>
 <p>https://www.youtube.com/watch?v=9bZkp7q19f0</p>
 EOF;
 
