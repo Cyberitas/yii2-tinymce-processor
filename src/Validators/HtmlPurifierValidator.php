@@ -33,7 +33,7 @@ class HtmlPurifierValidator extends FilterValidator
     {
         $this->filter = array($this, 'purify');
 
-        parent::init();
+        return parent::init();
     }
 
     /**

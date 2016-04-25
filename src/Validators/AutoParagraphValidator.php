@@ -46,7 +46,7 @@ class AutoParagraphValidator extends FilterValidator
     {
         $this->filter = array($this, 'autop');
 
-        parent::init();
+        return parent::init();
     }
 
     /**

@@ -49,10 +49,9 @@ class EssenceValidator extends FilterValidator
     public function init()
     {
         $this->filter = array($this, 'replace');
-
-        parent::init();
-
         $this->Essence = new Essence($this->essenceConfig);
+
+        return parent::init();
     }
 
     /**

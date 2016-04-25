@@ -125,8 +125,6 @@ class TexturizeValidator extends FilterValidator
     {
         $this->filter = array($this, 'texturize');
 
-        parent::init();
-
         $this->staticTranslations = array_merge(self::$DEFAULT_STATIC_TRANSLATIONS, [
             '``'   => $this->leftDoubleQuote,
             '\'\'' => $this->rightDoubleQuote
@@ -137,6 +135,8 @@ class TexturizeValidator extends FilterValidator
         }
 
         $this->prepareDynamicTranslations();
+
+        return parent::init();
     }
 
     /**

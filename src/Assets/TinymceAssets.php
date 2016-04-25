@@ -34,13 +34,13 @@ class TinymceAssets extends AssetBundle
      */
     public function init()
     {
-        parent::init();
-
         // Add debug or minified CSS for the specified skin to the bundle
         $this->css[] = 'skins/' . $this->skin . '/skin.' . ($this->debug ? '' : 'min.') . 'css';
 
         // Add debug or minified JS for TinyMCE and Modern theme to the bundle
         $this->js[] = $this->debug ? 'tinymce.js' : 'tinymce.min.js';
         $this->js[] = $this->debug ? 'themes/modern/theme.js' : 'themes/modern/theme.min.js';
+
+        return parent::init();
     }
 }
