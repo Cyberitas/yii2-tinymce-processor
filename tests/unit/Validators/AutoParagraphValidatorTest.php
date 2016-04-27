@@ -23,6 +23,11 @@ class AutoParagraphValidatorTest extends TestCase
      */
     protected $m;
 
+    /**
+     * @var AutoParagraphValidator
+     */
+    protected $val;
+
     public function setUp()
     {
         parent::setUp();
